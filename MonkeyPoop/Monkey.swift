@@ -12,7 +12,7 @@ import SpriteKit
 
 class Monkey: SKSpriteNode {
     
-    var atkSpeed = 0.4
+    var atkSpeed = 0.0
     var lastBasicAttack = NSDate()
     
     let attackTextures:[SKTexture]
@@ -20,7 +20,7 @@ class Monkey: SKSpriteNode {
     
     init() {
         
-        self.atkSpeed = 0.1
+        self.atkSpeed = 0.4
         lastBasicAttack = NSDate()
         
         let texture = SKTexture(imageNamed: "MonkeyIdle")

@@ -17,10 +17,18 @@ class MainMenu: SKScene {
         
         let size = self.frame.size
         
-        let playLabel = SKLabelNode(text: "Play")
-        playLabel.position = CGPointMake(size.width/2, size.height/2)
+        let playLabel = SKLabelNode(text: "Touch anywhere to Play")
+        playLabel.position = CGPointMake(size.width/2, size.height*0.2)
         playLabel.name = "Play"
+        playLabel.fontName = "Avenir"
+
         self.addChild(playLabel)
+        
+        let a1 = SKAction.fadeInWithDuration(1)
+        let a2 = SKAction.fadeOutWithDuration(1)
+        playLabel.runAction(SKAction.repeatActionForever(SKAction.sequence([a1,a2])))
+        
+        
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -28,7 +36,9 @@ class MainMenu: SKScene {
             let location = touch.locationInNode(self)
             let node = self.nodeAtPoint(location)
         
-            if node.name == "Play" {
+            if node.name == "Purchase" {
+            }
+            else {
                 self.play()
             }
         

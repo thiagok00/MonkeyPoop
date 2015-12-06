@@ -18,6 +18,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate,GuyProtocol {
     private var lifesArray = [SKSpriteNode]()
     private var score = 0
     var scoreLabel = SKLabelNode(text: "0")
+    var gamePaused = false
+    var popUp:SKSpriteNode?
+    
+    var spawnWait = 2.0
     
     
     enum PhysicsCategory {
@@ -73,13 +77,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate,GuyProtocol {
         }
         
         
-        //BEGIN SPAWN ENEMIES
-        let wait = SKAction.waitForDuration(2)
+        let pauseButton = SKSpriteNode(imageNamed: "pause")
+        pauseButton.size = CGSizeMake(60, 60)
+        pauseButton.position = CGPointMake(self.frame.width - pauseButton.size.width/2, self.frame.height - pauseButton.size.height/2)
+        pauseButton.name = "Pause"
+        self.addChild(pauseButton)
+        
+        
+        
+        
+        self.spawnEnemies()
+
+        
+    }
+    
+    
+    func spawnEnemies () {
+        self.removeActionForKey("Spawn")
+        let wait = SKAction.waitForDuration(spawnWait)
         let spawn = SKAction.runBlock({ self.generateEnemy()})
         let seq = SKAction.sequence([wait,spawn])
         
-        self.runAction(SKAction.repeatActionForever(seq))
-        
+        self.runAction(SKAction.repeatActionForever(seq), withKey: "Spawn")
+    
     }
     
     func generateEnemy() {
@@ -109,9 +129,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate,GuyProtocol {
         
         for touch in (touches ) {
             let location = touch.locationInNode(self)
+            let node = nodeAtPoint(location)
             
-            self.player.fireNormalPoop(location)
-            
+            if gamePaused {
+                if node.name == "Resume" {
+                    self.paused = false
+                    gamePaused = false
+                    self.popUp?.removeFromParent()
+                
+                }
+                else if node.name == "Home" {
+                    let scene = MainMenu(size:self.size)
+                    let transition = SKTransition.fadeWithDuration(1)
+                    self.view?.presentScene(scene, transition: transition)
+                }
+                else if node.name == "Restart" {
+                    let scene = GameScene(size:self.size)
+                    let transition = SKTransition.fadeWithDuration(1)
+                    self.view?.presentScene(scene, transition: transition)
+                }
+            }
+            else if node.name == "Pause" {
+                
+                self.paused = true
+                gamePaused = true
+                self.popUp = PausePopup.createPausePopup(self.size)
+                popUp?.zPosition = 100
+                self.addChild(popUp!)
+                
+            }
+            else {
+                self.player.fireNormalPoop(location)
+            }
         }
     }
     
@@ -142,6 +191,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate,GuyProtocol {
     func wonScore(reward: Int) {
         self.score = self.score + reward
         scoreLabel.text = "\(self.score)"
+        self.updateSpawnDuration()
+    }
+    func updateSpawnDuration() {
+    
+        switch score {
+        
+        case 2000:
+            self.spawnEnemies()
+            spawnWait = 0.1
+            break
+        case 1500:
+            self.spawnEnemies()
+            spawnWait = 0.3
+            break
+        case 1000:
+            self.spawnEnemies()
+            spawnWait = 0.5
+            break
+        case 500:
+            self.spawnEnemies()
+            spawnWait = 0.7
+            break
+        case 200:
+            self.spawnEnemies()
+            spawnWait = 1.0
+            break
+        default:
+            return
+        }
+    
+    
     }
     
     func guyRunnedOut(guy: Guy) {
@@ -153,6 +233,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate,GuyProtocol {
         if lifes > 0 {
             self.lifesArray[self.lifes-1].removeFromParent()
             lifes--
+        }
+        if lifes == 0 {
+            
+            self.gamePaused = true
+            self.paused = true
+            self.popUp = GameOverPopup.createGameOverPopup(self.size)
+            popUp?.zPosition = 200
+            self.addChild(self.popUp!)
+            
         }
     
     }
