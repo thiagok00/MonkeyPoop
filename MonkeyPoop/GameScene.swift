@@ -40,7 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate,GuyProtocol {
         screenHeight = self.frame.size.height
         
         //  BACKGROUND IMAGE
-        let bgImg = SKSpriteNode(imageNamed: "bggay")
+        let bgImg = SKSpriteNode(imageNamed: "bggame")
         bgImg.size = CGSizeMake(screenWidth, screenHeight )
         bgImg.position = CGPointMake(screenWidth/2, screenHeight/2)
         bgImg.zPosition = -20
