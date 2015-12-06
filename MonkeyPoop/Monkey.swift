@@ -29,7 +29,7 @@ class Monkey: SKSpriteNode {
         
         super.init(texture: texture, color: UIColor.clearColor(), size: CGSizeMake(48, 62))
         
-        
+        self.size = CGSize.monkeySize()
         
     }
     

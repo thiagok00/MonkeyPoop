@@ -11,6 +11,7 @@ import SpriteKit
 
 
 extension CGSize {
+    static func monkeySize()->CGSize {return CGSizeMake(352/6,304/6)}
     static func enemySize()->CGSize { return CGSizeMake(46,68) }
     static func poopSize()->CGSize { return CGSizeMake(32,32) }
     static func bananaSize()->CGSize { return CGSizeMake(32,32) }
